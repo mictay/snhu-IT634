@@ -1,0 +1,22 @@
+<div class="limiter">
+  <div class="container-login100">
+    <div class="wrap-login100">
+      <div class="login100-form validate-form">
+
+        <span class="login100-form-title pb-5">
+          <img src="assets/sun-logo.svg" height="50" width="50" alt=""><br />
+          SNHU-Air
+        </span>
+
+        <div class="container-login100-form-btn">
+          <button mat-flat-button color="primary" class="login100-form-btn" routerLink="/flights">
+            Go To Flights
+          </button>
+        </div>
+
+        <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{error}}</div>
+
+      </div>
+    </div>
+  </div>
+</div>

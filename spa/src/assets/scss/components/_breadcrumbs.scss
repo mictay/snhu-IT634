@@ -57,7 +57,7 @@
     color: #444444;
   }
   .breadcrumb-item + .breadcrumb-item {
-    padding-top: 3px;
+    /*padding-top: 3px;*/
     padding-left: 0px;
     &::before {
       float: unset;

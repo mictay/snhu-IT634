@@ -1,12 +1,14 @@
 <section class="content">
 
   <div class="container-fluid">
+
     <div class="block-header">
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <ul class="breadcrumb breadcrumb-style ">
-            <li class="breadcrumb-item">
-              <h4 class="page-title">Flights</h4>
+            <li class="breadcrumb-item bcrumb-1">
+              <a routerLink="/flights">
+                <i class="material-icons-two-tone vertical-align">flight</i> Flights</a>
             </li>
           </ul>
         </div>
@@ -51,18 +53,18 @@
               <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                 <mat-form-field class="example-full-width" appearance="outline">
                   <mat-label>Departure date</mat-label>
-                  <input matInput [matDatepicker]="picker">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
+                  <input matInput [matDatepicker]="picker1">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
                 </mat-form-field>
               </div>
 
               <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                 <mat-form-field class="example-full-width" appearance="outline">
                   <mat-label>Return date</mat-label>
-                  <input matInput [matDatepicker]="picker">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
+                  <input matInput [matDatepicker]="picker2">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
                 </mat-form-field>
               </div>
 
@@ -84,7 +86,7 @@
 
             <div class="row">
               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-align-center">
-                <button mat-raised-button color="primary" class="flight-search-button-style">Search</button>
+                <button mat-raised-button color="primary" class="flight-search-button-style" routerLink="offers">Search</button>
               </div>
             </div>
 

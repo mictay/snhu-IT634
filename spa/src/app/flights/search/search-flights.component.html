@@ -38,13 +38,25 @@
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                   <mat-form-field class="example-full-width" appearance="outline">
                     <mat-label>From</mat-label>
-                    <input matInput>
+                    <mat-select [(ngModel)]="selectedAirportFrom">
+                      <input matInput
+                        class="search-flight-search" 
+                        placeholder="search for airport"
+                        (keyup)="onKeyFrom($event.target.value)"
+                      />
+                      <mat-option style="display: none;"></mat-option>
+                      <mat-option *ngFor="let airport of airportsFrom" [value]="airport">{{airport.name}}</mat-option>
+                    </mat-select>
                   </mat-form-field>
                 </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                   <mat-form-field class="example-full-width" appearance="outline">
                     <mat-label>To</mat-label>
-                    <input matInput>
+                    <mat-select [(ngModel)]="selectedAirportTo">
+                      <input matInput class="search-flight-search" placeholder="search" (keyup)="onKeyTo($event.target.value)"/>
+                      <mat-option style="display: none;"></mat-option>
+                      <mat-option *ngFor="let airport of airportsTo" [value]="airport">{{airport.name}}</mat-option>
+                    </mat-select>
                   </mat-form-field>
                 </div>
             </div>

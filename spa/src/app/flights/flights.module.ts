@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { FlightsRoutingModule } from './flights-routing.module';
@@ -14,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     SearchFlightsComponent,
@@ -34,7 +35,9 @@ import { FormsModule } from '@angular/forms';
     MatDatepickerModule,
     MatTableModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule
   ],
 })
 export class FlightsModule {}

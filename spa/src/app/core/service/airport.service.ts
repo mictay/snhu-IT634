@@ -4,13 +4,12 @@ import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Airport, Airports } from '../interfaces/airport';
 
-
 @Injectable({
     providedIn: 'root',
 })
 export class AirportService {
 
-    apiURL = 'http://localhost:3000';
+    apiURL = 'https://va9ka2mpt0.execute-api.us-east-1.amazonaws.com/api';
 
     // Http Options
     httpOptions = {
@@ -18,11 +17,6 @@ export class AirportService {
         'Content-Type': 'application/json'
         })
     }  
-
-    airports: Airport[] =[
-        {icoa: 'ta', name: 'mike', display: 'michael taylor', lat: 1, lon: 3},
-        {icoa: 'at', name: 'quinn', display: 'quinn taylor', lat: 1, lon: 3}
-     ];
 
     constructor(private http: HttpClient) {}
 
@@ -49,7 +43,7 @@ export class AirportService {
             // Get server-side error
             errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
         }
-        window.alert(errorMessage);
+        //window.alert(errorMessage);
         return throwError(errorMessage);
     }
 

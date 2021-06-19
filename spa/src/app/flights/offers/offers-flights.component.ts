@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Airport } from '../../core/interfaces/airport';
+import { AirportService } from '../../core/service/airport.service';
+import { SessionService } from '../../core/service/session.service';
+import { FormControl } from '@angular/forms';
+import { FlightsRequest } from "../../core/interfaces/flights";
+import { Router } from "@angular/router";
+
 @Component({
   selector: 'app-offers-flights',
   templateUrl: './offers-flights.component.html',

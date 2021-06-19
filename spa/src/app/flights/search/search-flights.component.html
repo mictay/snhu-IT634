@@ -22,86 +22,103 @@
       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
         <div class="card">
           <div class="card-body">
-
-            <div class="row flight-padding-bottom-15">
-              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <mat-radio-group>
-                  <mat-radio-button value="after" class="text-size-18"><span class="flight-label">
-                    Round-Trip</span></mat-radio-button>
-                  <mat-radio-button value="before" class="text-size-18"><span class="flight-label">
-                    One-Way</span></mat-radio-button>
-                </mat-radio-group>
+            <!-- <form [formGroup]="form"> -->
+              <div class="row flight-padding-bottom-15">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <mat-radio-group (change)="roundTrip($event)" (checked)="roundTripSelection">
+                    <mat-radio-button value="true" class="text-size-18" [checked]="roundTripSelection === 'true'"><span class="flight-label">
+                      Round-Trip</span></mat-radio-button>
+                    <mat-radio-button value="false" class="text-size-18" [checked]="roundTripSelection === 'false'"><span class="flight-label">
+                      One-Way</span></mat-radio-button>
+                  </mat-radio-group>
+                </div>
               </div>
-            </div>
 
-            <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                      <mat-label>From</mat-label>
+                      <mat-select [(ngModel)]="selectedAirportFrom"
+                        (change)='onChange($event)'>
+                        <input matInput
+                          class="search-flight-search" 
+                          placeholder="search for airport"
+                          (keyup)="onKeyFrom($event.target.value)"
+                        />
+                        <mat-option style="display: none;"></mat-option>
+                        <mat-option *ngFor="let airport of airportsFrom" [value]="airport">{{airport.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                      <mat-label>To</mat-label>
+                      <mat-select [(ngModel)]="selectedAirportTo"
+                        (change)='onChange($event)'>
+                        <input matInput class="search-flight-search" 
+                          placeholder="search" 
+                          (keyup)="onKeyTo($event.target.value)"/>
+                        <mat-option style="display: none;"></mat-option>
+                        <mat-option *ngFor="let airport of airportsTo" [value]="airport">{{airport.name}}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                   <mat-form-field class="example-full-width" appearance="outline">
-                    <mat-label>From</mat-label>
-                    <mat-select [(ngModel)]="selectedAirportFrom">
-                      <input matInput
-                        class="search-flight-search" 
-                        placeholder="search for airport"
-                        (keyup)="onKeyFrom($event.target.value)"
-                      />
-                      <mat-option style="display: none;"></mat-option>
-                      <mat-option *ngFor="let airport of airportsFrom" [value]="airport">{{airport.name}}</mat-option>
-                    </mat-select>
+                    <mat-label>Departure date</mat-label>
+                    <input matInput [matDatepicker]="picker1" 
+                      [formControl]="departureDate"
+                      (change)='onChange($event)'
+                    >
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
                   </mat-form-field>
                 </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
                   <mat-form-field class="example-full-width" appearance="outline">
-                    <mat-label>To</mat-label>
-                    <mat-select [(ngModel)]="selectedAirportTo">
-                      <input matInput class="search-flight-search" placeholder="search" (keyup)="onKeyTo($event.target.value)"/>
-                      <mat-option style="display: none;"></mat-option>
-                      <mat-option *ngFor="let airport of airportsTo" [value]="airport">{{airport.name}}</mat-option>
-                    </mat-select>
+                    <mat-label>Return date</mat-label>
+                    <input matInput [matDatepicker]="picker2" 
+                        [formControl]="returnDate"
+                        (change)='onChange($event)'
+                      >
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
                   </mat-form-field>
                 </div>
-            </div>
 
-            <div class="row">
-              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Departure date</mat-label>
-                  <input matInput [matDatepicker]="picker1">
-                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                  <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Adults</mat-label>
+                    <input matInput type="number" min="0" max="10" step="1" 
+                      (change)='onChange($event)'
+                      [(ngModel)]="adults">
+                  </mat-form-field>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Children</mat-label>
+                    <input matInput type="number" min="0" max="10" step="1" 
+                      (change)='onChange($event)'
+                      [(ngModel)]="children">
+                  </mat-form-field>
+                </div>
+
               </div>
 
-              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Return date</mat-label>
-                  <input matInput [matDatepicker]="picker2">
-                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                  <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
+              <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-align-center">
+                  <button mat-raised-button color="primary" 
+                    class="flight-search-button-style" 
+                    [disabled]="disableButton"
+                    (click)="onSearch()">Search</button>
+                </div>
               </div>
-
-              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Adults</mat-label>
-                  <input matInput>
-                </mat-form-field>
-              </div>
-
-              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-                <mat-form-field class="example-full-width" appearance="outline">
-                  <mat-label>Children</mat-label>
-                  <input matInput>
-                </mat-form-field>
-              </div>
-
-            </div>
-
-            <div class="row">
-              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 text-align-center">
-                <button mat-raised-button color="primary" class="flight-search-button-style" routerLink="offers">Search</button>
-              </div>
-            </div>
-
+            <!-- </form> -->
           </div>
         </div>
       </div>

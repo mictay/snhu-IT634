@@ -52,6 +52,12 @@
             <h2>Departing Flights</h2>
           </div>
           <div class="body table-responsive">
+            <div class="row">
+                <table class="flightRequestDetails">
+                  <tr><th>Adults: </th><td>{{adults}}</td><td class="cellseparator">&nbsp;</td><th>Duration: </th><td>{{duration}}</td></tr>
+                  <tr><th>Children: </th><td>{{children}}</td><td class="cellseparator">&nbsp;</td><th>Distance:  </th><td>{{distance}}</td></tr>
+                </table>
+            </div>
             <table mat-table [dataSource]="dataSource" class="w-100">
               <!-- Flight Column -->
               <ng-container matColumnDef="flight">

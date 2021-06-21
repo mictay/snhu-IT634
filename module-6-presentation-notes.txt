@@ -1,0 +1,40 @@
+# High Level Demo
+
+http://it634.mictay.com.s3-website-us-east-1.amazonaws.com
+
+
+# Visual Studio Code: Project Structure
+
+- dynamodb
+
+- lambda
+
+- spa
+
+ng build
+show the dist folder
+show the docs folder
+show the github  https://github.com/mictay/snhu-IT634  
+
+
+show the airports  (self service) AWS Lambda/DynamoDB
+show the flights  (self service)  AWS Lambda/DynamoDB
+show the weather  (3rd party) https://home.openweathermap.org
+show the countrys (3rd Party)  (grab example from chrome tools) 
+
+show the resuable weather component
+
+# AWS
+
+- Show the S3 bucket
+
+
+- Show the Lambda
+
+airports  (grab example from chrome tools) 
+
+
+flights  (grab example from chrome tools) 
+
+
+- Show the DynamoDB

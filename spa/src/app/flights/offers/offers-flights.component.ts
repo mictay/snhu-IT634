@@ -33,6 +33,11 @@ export class OffersFlightsComponent implements OnInit {
   lblArrivingLat: string;
   lblArrivingLon: string;
 
+  adults:number;
+  children:number;
+  distance:string;
+  duration:string;
+
   dataSource:any = [
     { flight: 'no flight data'},
   ];
@@ -85,6 +90,10 @@ export class OffersFlightsComponent implements OnInit {
     this.lblDepartingLon = this.flightRequest.from.lon + "";
     this.lblArrivingLon = this.flightRequest.to.lon + "";
 
+    this.children = this.flightRequest.children;
+    this.adults = this.flightRequest.adults;
+    this.distance = '';
+
     // We have enought information to populate the Weather Information
     //this.updateWeather(this.flightRequest.from.lat, this.flightRequest.from.lon, 'Departing');
     //this.updateWeather(this.flightRequest.to.lat, this.flightRequest.to.lon, 'Arriving');
@@ -109,8 +118,16 @@ export class OffersFlightsComponent implements OnInit {
         //We have a response, lets map it to our datasource
         //{ flight: 1014, departs: '10:52a', arrives: '10:52a', price: '$99.99'}
         this.dataSource = [];
-        for(let flight of data['flights']['flightDeparture']) {
+        var i = 0;
+        const interateData:Flight[] = data['flights']['flightDeparture'];
+
+        for(let flight of interateData) {
           console.log("flight", flight);
+
+          if(i === 0) {
+            this.distance = flight.distance.toFixed(2) + ' miles';
+            this.duration = flight.duration.toFixed(2) + ' hrs';
+          }
 
           var departs = new Date(flight.departs);
           var arrives = new Date(flight.arrives);
@@ -121,7 +138,7 @@ export class OffersFlightsComponent implements OnInit {
               "departing": this.sessionService.formatDateMMDDYYY(departs),
               "departs": this.sessionService.toTime(departs),
               "arrives": this.sessionService.toTime(arrives),
-              "price": '$' + parseFloat(flight.total).toFixed(2),
+              "price": '$' + (flight.total).toFixed(2),
             }
           );
 

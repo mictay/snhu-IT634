@@ -18,6 +18,25 @@ div.mat-select-panel {
 
 }
 
+.flightRequestDetails {
+    width: 100%;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.flightRequestDetails th {
+    width: 64px;
+}
+
+.flightRequestDetails td {
+    min-width: 90px;
+}
+
+.cellseparator {
+    min-width: 15px;
+}
+
+
 @media only screen and (max-width: 420px) {
 
     //Hide the Arrives # column if we small form factor

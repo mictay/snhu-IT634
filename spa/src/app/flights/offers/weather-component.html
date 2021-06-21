@@ -1,0 +1,49 @@
+<div class="card">
+    <div class="flag"><img src="{{flag}}" class="countryFlag" alt="{{countryName}}" matTooltip="{{countryName}}"></div>
+    <div class="header">
+        {{title}} &nbsp;<strong>{{lblDisplayName}}</strong>
+    </div>
+    <div class="body">
+        <div class="row">
+            <div class="weatherInfo" id="WeatherInfo">
+                <img src="{{weatherIconURL}}" matTooltip="{{weatherWeather}}"/><br />
+                {{weatherWeather}}
+            </div>
+            <div class="flightInfo">
+                <table>
+                    <tr>
+                        <th colspan="2">Current Conditions</th>
+                    </tr>
+                    <tr>
+                        <td>Current Time:</td>
+                        <td>{{weatherTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>Weather:</td>
+                        <td>{{weatherWeather}}</td>
+                    </tr>
+                    <tr>
+                        <td>Temperature:</td>
+                        <td>{{weatherTemperature}}</td>
+                    </tr>
+                    <tr>
+                        <td>Humidity:</td>
+                        <td>{{weatherHumidity}}</td>
+                    </tr>
+                    <tr>
+                        <td>Latitude:</td>
+                        <td>{{lblLat}}</td>
+                    </tr>
+                    <tr>
+                        <td>Longitude:</td>
+                        <td>{{lblLon}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><a href="https://maps.google.com/?q={{lblLat}},{{lblLon}}"
+                                target="_blank"><small>view on google maps</small></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>    

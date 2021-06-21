@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
-import { FlightsRequest, FlightsResponse, FlightsData} from '../interfaces/flights';
-import { SessionService } from './session.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class FlightsService {
+export class CountryService {
 
-    apiURL = 'https://va9ka2mpt0.execute-api.us-east-1.amazonaws.com/api';
+    apiURL = 'https://restcountries.eu';
 
     // Http Options
     httpOptions = {
@@ -19,25 +17,17 @@ export class FlightsService {
         })
     }  
 
-    constructor(private http: HttpClient, private sessionService:SessionService) {}
+    constructor(private http: HttpClient) {}
 
     /***************************************
      * 
      */
-    getFlights(request:FlightsRequest): Observable<FlightsResponse> {
+    getCountry(countyCode:string): Observable<any> {
 
         //Build our QueryString
-        let filter = "?";
-        filter = filter + "fr=" + request.from['sk'];
-        filter = filter + "&to=" + request.to['sk'];
-        filter = filter + "&ad=" + request.adults;
-        filter = filter + "&ch=" + request.children;
-        filter = filter + "&rt=" + request.roundTrip;
-        filter = filter + "&de=" + this.sessionService.formatDateMMDDYYY(request.dateDeparture);
-        filter = filter + "&re=" + this.sessionService.formatDateMMDDYYY(request.dateReturn);
-        console.log('FlightsService->getFlights', filter);
+        let filter = countyCode.toLowerCase();
 
-        return this.http.get<any>(this.apiURL + '/flights' + filter)
+        return this.http.get<any>(this.apiURL + '/rest/v2/alpha/' + filter)
         .pipe(
             retry(1),
             catchError(this.handleError)

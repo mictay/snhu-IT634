@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Airport } from '../../core/interfaces/airport';
+import { WeatherRequest, WeatherResponse, WeatherData, WeatherMain } from '../../core/interfaces/weather';
 import { AirportService } from '../../core/service/airport.service';
 import { SessionService } from '../../core/service/session.service';
+import { FlightsService } from '../../core/service/flights.service';
+import { WeatherService } from '../../core/service/weather.service';
 import { FormControl } from '@angular/forms';
-import { FlightsRequest } from "../../core/interfaces/flights";
+import { Flight, FlightsRequest, FlightsResponse } from "../../core/interfaces/flights";
 import { Router } from "@angular/router";
 
 @Component({
@@ -12,26 +15,126 @@ import { Router } from "@angular/router";
   styleUrls: ['./offers-flights.component.scss'],
 })
 export class OffersFlightsComponent implements OnInit {
-  displayedColumns: string[] = ['flight', 'departs', 'arrives', 'price'];
+  displayedColumns: string[] = ['flight', 'departing', 'departs', 'arrives', 'price'];
+
+  processing:boolean = false;
+  hasError:boolean = false;
+  errorMessage:string = '';
+  flightResponse:FlightsResponse;
+  flightRequest:FlightsRequest;
+
+  airportDeparting:Airport;
+  airportArriving:Airport;
+
+  lblDepartingDisplayName: string;
+  lblArrivingDisplayName: string;
+  lblDepartingLat: string;
+  lblDepartingLon: string;
+  lblArrivingLat: string;
+  lblArrivingLon: string;
 
   dataSource:any = [
-    { flight: 1014, departs: '10:52a', arrives: '10:52a', price: '$99.99'},
-    { flight: 2234, departs: '12:52p', arrives: '1:52p', price: '$99.99'},
-    { flight: 3342, departs: '1:30p', arrives: '2:30p', price: '$99.99'},
-    { flight: 4754, departs: '2:30p', arrives: '3:30p', price: '$99.99'},
-    { flight: 5234, departs: '3:15p', arrives: '4:15p', price: '$99.99'},
-    { flight: 6123, departs: '7:30p', arrives: '8:30p', price: '$99.99'},
-    { flight: 7654, departs: '10:00p', arrives: '11:00p', price: '$99.99'},
-    { flight: 8546, departs: '11:00p', arrives: '12:00a', price: '$99.99'},
-    { flight: 9234, departs: '11:20p', arrives: '12:20a', price: '$99.99'},
-    { flight: 1034, departs: '11:59p', arrives: '12:59a', price: '$99.99'}
+    { flight: 'no flight data'},
   ];
 
-  constructor() {
+  /*****************************************************************************
+   */
+  constructor(private airportService: AirportService, 
+    private flightsService: FlightsService,
+    private sessionService: SessionService, 
+    private weatherService: WeatherService,
+    private router:Router) {
+    console.log("OffersFlightsComponent:constructor", "called");
+
+    // Get the Params from the Session (put there by the search-flights-components.ts)
+    this.flightRequest = this.sessionService.getFlightsRequest();
+    this.airportDeparting = this.flightRequest ? this.flightRequest.from : null;
+    this.airportArriving = this.flightRequest ? this.flightRequest.to : null;
+    console.log('OffersFlightsComponent:constructor flightRequest', this.flightRequest);    
   }
 
-  ngOnInit() {
-    
+  /*****************************************************************************
+   */
+  ngOnInit() {    
+    console.log("OffersFlightsComponent:ngOnInit", "called");
+    this.hasError = false;
+    this.processing = true;
+
+    this.searchFlights();
   }
 
-}
+  /*****************************************************************************
+   * Filter the airports list and send back to populate the selected Airports
+   */
+  searchFlights() {
+
+    // Validate we have a proper flight request object
+    if(!this.flightRequest || (this.flightRequest.adults + this.flightRequest.children) === 0) {
+      this.errorMessage = "Not a valid request.  Return to the Search Screen";
+      this.hasError = true;
+      return;
+    }
+
+    // Update our Depart and Arriving Airport Information
+    this.lblDepartingDisplayName = this.flightRequest.from.displayName;
+    this.lblArrivingDisplayName = this.flightRequest.to.displayName;
+
+    this.lblDepartingLat = this.flightRequest.from.lat + "";
+    this.lblArrivingLat = this.flightRequest.to.lat + "";
+
+    this.lblDepartingLon = this.flightRequest.from.lon + "";
+    this.lblArrivingLon = this.flightRequest.to.lon + "";
+
+    // We have enought information to populate the Weather Information
+    //this.updateWeather(this.flightRequest.from.lat, this.flightRequest.from.lon, 'Departing');
+    //this.updateWeather(this.flightRequest.to.lat, this.flightRequest.to.lon, 'Arriving');
+
+    // Call the Flights Service to get all Flight Information
+    this.flightsService.getFlights(this.flightRequest).subscribe( 
+      (data:FlightsResponse) => {
+        console.log('OffersFlightsComponent:searchFlights data', data);
+
+        //Stop if our service validation says we have an error
+        if(data['error']) {
+          this.errorMessage = '[Message from the API]' + data['error'];
+          this.hasError = true;
+          return;
+        }
+
+        if (!data['flights'] || !data["flights"]['flightDeparture'] || data["flights"]['flightDeparture'].lenght === 0) {
+          this.errorMessage = "Flights not found. Please try a different search";
+          this.hasError = true;
+        }
+
+        //We have a response, lets map it to our datasource
+        //{ flight: 1014, departs: '10:52a', arrives: '10:52a', price: '$99.99'}
+        this.dataSource = [];
+        for(let flight of data['flights']['flightDeparture']) {
+          console.log("flight", flight);
+
+          var departs = new Date(flight.departs);
+          var arrives = new Date(flight.arrives);
+
+          this.dataSource.push(
+            {
+              "flight": flight.flight,
+              "departing": this.sessionService.formatDateMMDDYYY(departs),
+              "departs": this.sessionService.toTime(departs),
+              "arrives": this.sessionService.toTime(arrives),
+              "price": '$' + parseFloat(flight.total).toFixed(2),
+            }
+          );
+
+        }
+
+        this.hasError = false;
+        this.processing = false;
+        console.log('OffersFlightsComponent:searchFlights completed');
+      },
+      (error:string) => {
+        console.log('OffersFlightsComponent:searchFlights error', error)
+    });
+
+  }
+
+}//end class

@@ -5,6 +5,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { FlightsRoutingModule } from './flights-routing.module';
 import { SearchFlightsComponent } from './search/search-flights.component';
 import { OffersFlightsComponent } from './offers/offers-flights.component';
+import { WeatherComponent } from './offers/weather-component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -16,10 +17,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     SearchFlightsComponent,
-    OffersFlightsComponent
+    OffersFlightsComponent,
+    WeatherComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +40,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
-  ],
+    RouterModule,
+    MatProgressSpinnerModule
+  ]
 })
 export class FlightsModule {}

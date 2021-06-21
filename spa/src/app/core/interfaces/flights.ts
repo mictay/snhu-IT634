@@ -6,8 +6,8 @@ export interface FlightsRequest {
     adults: number;
     children: number;
     roundTrip: string;
-    dateDeparture: string;
-    dateReturn: string
+    dateDeparture: Date;
+    dateReturn: Date
 }
 
 export interface FlightsResponse {
@@ -22,6 +22,8 @@ export interface FlightsData {
     returnDate:string;
     adultRatePerMile:number;
     childRatePerMile:number;
+    fromAirprt:string,
+    toAirport:string,
     fligthDeparture:Flight[],
     flightReturn:Flight[]
 }

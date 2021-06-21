@@ -4,7 +4,9 @@ export interface Airport {
     display: string;
     lat: number;
     lon: number;
-
+    displayName: string;
+    tz: string;
+    country: string;
 }
 
 export interface Airports {

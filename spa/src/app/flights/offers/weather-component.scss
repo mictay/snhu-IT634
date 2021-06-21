@@ -1,0 +1,19 @@
+.weatherInfo {
+    width: 135px;
+    height: 100px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.flag {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    right: 0;
+    height: 50px;
+    width: 50px;
+}
+.countryFlag {
+    padding: 5px;
+    width: 50px;
+}

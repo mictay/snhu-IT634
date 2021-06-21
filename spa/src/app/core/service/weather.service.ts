@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
-import { FlightsRequest, FlightsResponse, FlightsData} from '../interfaces/flights';
 import { SessionService } from './session.service';
+import { WeatherRequest, WeatherResponse } from '../interfaces/weather';
+
 
 @Injectable({
     providedIn: 'root',
 })
-export class FlightsService {
+export class WeatherService {
 
-    apiURL = 'https://va9ka2mpt0.execute-api.us-east-1.amazonaws.com/api';
+    apiURL = 'https://api.openweathermap.org';
+    apiKey = '04a068829101c712d9e1643f4b09eeee';
 
     // Http Options
     httpOptions = {
@@ -24,20 +26,16 @@ export class FlightsService {
     /***************************************
      * 
      */
-    getFlights(request:FlightsRequest): Observable<FlightsResponse> {
+    getWeather(request:WeatherRequest): Observable<WeatherResponse> {
 
         //Build our QueryString
-        let filter = "?";
-        filter = filter + "fr=" + request.from['sk'];
-        filter = filter + "&to=" + request.to['sk'];
-        filter = filter + "&ad=" + request.adults;
-        filter = filter + "&ch=" + request.children;
-        filter = filter + "&rt=" + request.roundTrip;
-        filter = filter + "&de=" + this.sessionService.formatDateMMDDYYY(request.dateDeparture);
-        filter = filter + "&re=" + this.sessionService.formatDateMMDDYYY(request.dateReturn);
-        console.log('FlightsService->getFlights', filter);
+        let filter = "?lat=" + request.lat.toFixed(4) ;
+        filter = filter + "&lon=" + request.lon.toFixed(4) ;
+        filter = filter + "&appid=" + this.apiKey;
+        filter = filter + "&units=imperial";
+        console.log('WeatherService->getWeather', filter);
 
-        return this.http.get<any>(this.apiURL + '/flights' + filter)
+        return this.http.get<any>(this.apiURL + '/data/2.5/weather' + filter)
         .pipe(
             retry(1),
             catchError(this.handleError)

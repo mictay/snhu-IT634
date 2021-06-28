@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './core/guard/auth.guard';
 const routes: Routes = [
+
   {
     path: '',
     component: MainLayoutComponent,
@@ -14,6 +15,18 @@ const routes: Routes = [
         path: 'flights',
         loadChildren: () =>
           import('./flights/flights.module').then((m) => m.FlightsModule),
+      }
+    ],
+  },
+
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: 'id_token',
+        loadChildren: () =>
+          import('./id_token/token.module').then((m) => m.TokenModule),
       }
     ],
   },

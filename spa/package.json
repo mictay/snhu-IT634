@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test --code-coverage",
     "lint": "ng lint && stylelint \"**/*.scss\"",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "cmd": "del /f/q/s ./node_modules/*.* > nul",
+    "clean": "rimraf .cache .tmp lib build dist"
   },
   "private": true,
   "dependencies": {

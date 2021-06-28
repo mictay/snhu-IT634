@@ -25,7 +25,7 @@ IF( LOCATE(`city`,`name`) = 0,
 ) as notes
 from `airports` order by `icao`;
 
-select * from airports where `icao` like '%LGA%';
+select * from airports where `icao` like '%MCO%';
 
 update airports set state = city where state = '' and city != '';
 update airports set city = REPLACE(name, 'Airport', ''), state = REPLACE(name, 'Airport', '') where state = '' and city = '';

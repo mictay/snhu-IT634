@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost.disney.com:8626',
+  apiUrl: 'https://localhost:4200',
 };
 
 /*

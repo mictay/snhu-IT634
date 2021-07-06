@@ -1,0 +1,52 @@
+<div class="body table-responsive overflow-x-hidden">
+    <div class="row">
+        <table class="flightRequestDetails">
+            <tr>
+                <th>Adults: </th>
+                <td>{{adults}}</td>
+                <td class="cellseparator">&nbsp;</td>
+                <th>Duration: </th>
+                <td>{{duration}}</td>
+            </tr>
+            <tr>
+                <th>Children: </th>
+                <td>{{children}}</td>
+                <td class="cellseparator">&nbsp;</td>
+                <th>Distance: </th>
+                <td>{{distance}}</td>
+            </tr>
+        </table>
+    </div>
+    <table mat-table [dataSource]="tableData" class="w-100">
+        <!-- Flight Column -->
+        <ng-container matColumnDef="flight">
+            <th mat-header-cell *matHeaderCellDef> Flight # </th>
+            <td mat-cell *matCellDef="let element"> {{element.flight}} </td>
+        </ng-container>
+        <!-- Date Column -->
+        <ng-container matColumnDef="departing">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.departing}} </td>
+        </ng-container>
+        <!-- Departs Column -->
+        <ng-container matColumnDef="departs">
+            <th mat-header-cell *matHeaderCellDef> Departs </th>
+            <td mat-cell *matCellDef="let element"> {{element.departs}} </td>
+        </ng-container>
+        <!-- Duration Column -->
+        <ng-container matColumnDef="arrives">
+            <th mat-header-cell *matHeaderCellDef> Arrives </th>
+            <td mat-cell *matCellDef="let element"> {{element.arrives}} </td>
+        </ng-container>
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef> Price </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-raised-button color="primary" class="flight-search-button-style"
+                    (click)="onSelectPrice(element.flight)">{{element.price}}</button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

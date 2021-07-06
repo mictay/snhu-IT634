@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { WeatherRequest, WeatherResponse, WeatherData, WeatherMain } from '../../core/interfaces/weather';
 import { WeatherService } from '../../core/service/weather.service';
 import { SessionService } from '../../core/service/session.service';
 import { CountryService } from '../../core/service/country.service'; 
 import { Airport } from '../../core/interfaces/airport';
+import { MatAccordion } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-weather',
@@ -11,6 +12,9 @@ import { Airport } from '../../core/interfaces/airport';
   styleUrls: ['./weather-component.scss'],
 })
 export class WeatherComponent implements OnInit{
+  @ViewChild(MatAccordion) accordion: MatAccordion;
+
+  panelOpenState = false;
 
   @Input() title:string;
   @Input() airport:Airport;

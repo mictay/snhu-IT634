@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PreloadAllModules } from '@angular/router';
-import { FlightsRequest} from '../interfaces/flights';
+import { Flight, FlightsRequest} from '../interfaces/flights';
 
 @Injectable({
     providedIn: 'root',
@@ -14,17 +14,78 @@ export class SessionService {
     constructor() {}
 
     /***************************************
+     */
+     setSelectedFlightDeparture(param:Flight) {
+
+        if(param)
+            sessionStorage.setItem('SELECTED_FLIGHT_DEPARTURE', JSON.stringify(param));
+        else
+            sessionStorage.removeItem('SELECTED_FLIGHT_DEPARTURE');
+
+    }
+
+    /***************************************
+     */
+    getSelectedFlightDeparture() {
+        let ret:Flight = null;
+        let sRet = sessionStorage.getItem('SELECTED_FLIGHT_DEPARTURE');
+
+        if(sRet) {
+            ret = JSON.parse(sRet);
+        }
+
+        return ret;
+    }
+
+    /***************************************
+     */
+     setSelectedFlightReturn(param:Flight) {
+
+        if(param)
+            sessionStorage.setItem('SELECTED_FLIGHT_RETURN', JSON.stringify(param));
+        else
+            sessionStorage.removeItem('SELECTED_FLIGHT_RETURN');
+
+    }
+
+    /***************************************
+     */
+    getSelectedFlightReturn() {
+        let ret:Flight = null;
+        let sRet = sessionStorage.getItem('SELECTED_FLIGHT_RETURN');
+
+        if(sRet) {
+            ret = JSON.parse(sRet);
+        }
+
+        return ret;
+    }
+
+    /***************************************
      * 
      */
     setFlightRequest(flightsRequest:FlightsRequest) {
-        this.flightsRequest = flightsRequest;
+
+        if(flightsRequest)
+            sessionStorage.setItem('FLIGHT_SEARCH_REQUEST', JSON.stringify(flightsRequest));
+        else
+            sessionStorage.removeItem('FLIGHT_SEARCH_REQUEST');
     }
 
     /***************************************
      * 
      */
      getFlightsRequest():FlightsRequest {
-        return this.flightsRequest;
+        let ret:FlightsRequest = null;
+        let sRet = sessionStorage.getItem('FLIGHT_SEARCH_REQUEST');
+
+        if(sRet) {
+            ret = JSON.parse(sRet);
+            ret['dateDeparture'] = new Date(ret.dateDeparture);
+            ret['dateReturn'] = new Date(ret.dateReturn);
+        }
+
+        return ret;
     }
 
     /*****************************************

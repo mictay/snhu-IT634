@@ -1,20 +1,86 @@
 <section class="content">
 
-    <div class="container-fluid">
-  
-      <div class="block-header">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <ul class="breadcrumb breadcrumb-style ">
-              <li class="breadcrumb-item bcrumb-1">
-                <a routerLink="/flights">
-                  <i class="material-icons-two-tone vertical-align">flight</i> Token</a>
-              </li>
-            </ul>
+  <div class="container-fluid">
+
+    <div class="block-header" *ngIf="hasUser">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <ul class="breadcrumb breadcrumb-style ">
+            <li class="breadcrumb-item bcrumb-1">
+              <a routerLink="/id_token">Profile</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+    </div>
+
+    <div class="row" *ngIf="!hasUser">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="card-body"><a href="{{loginURL}}">Login</a> to continue..</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="hasUser">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="card-header">User Information</div>
+          <div class="card-body">
+            <div class="row">
+              <table class="profileDataTable">
+                <tr>
+                  <td class="profileDataLabel">Name</td>
+                  <td class="profileDataValue">{{profileData?.user.name}}</td>
+                </tr>
+                <tr>
+                  <td class="profileDataLabel">Username</td>
+                  <td class="profileDataValue">{{profileData?.user.sk}}</td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-  
     </div>
-  </section>
-  
+
+
+    <div class="row" *ngIf="hasUser">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card">
+          <div class="card-header">Booked Flights</div>
+          <div class="card-body">
+
+            <table mat-table [dataSource]="tableData" class="w-100">
+
+              <ng-container matColumnDef="flight">
+                <th mat-header-cell *matHeaderCellDef> Flight # </th>
+                <td mat-cell *matCellDef="let element"> {{element.flight}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="departing">
+                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <td mat-cell *matCellDef="let element"> {{element.departing}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="departs">
+                <th mat-header-cell *matHeaderCellDef> Departs </th>
+                <td mat-cell *matCellDef="let element"> {{element.departs}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="arrives">
+                <th mat-header-cell *matHeaderCellDef> Arrives </th>
+                <td mat-cell *matCellDef="let element"> {{element.arrives}} </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

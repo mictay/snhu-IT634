@@ -60,4 +60,21 @@ export class FlightsService {
         return throwError(errorMessage);
     }
 
+    /***************************************
+     * 
+     */
+     book(params:any): Observable<any> {
+
+        console.log('FlightsService->book', JSON.stringify(params));
+        
+        const headers = { 'Content-Type': 'plain/text' };
+
+        return this.http.post<any>(this.apiURL + '/book', JSON.stringify(params), {headers})
+        .pipe(
+            retry(1),
+            catchError(this.handleError)
+        )
+
+    }
+
 }

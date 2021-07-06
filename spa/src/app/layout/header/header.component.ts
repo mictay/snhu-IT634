@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigService } from 'src/app/config/config.service';
+import { ProfileService } from 'src/app/core/service/profile.service';
 const document: any = window.document;
 
 @Component({
@@ -18,63 +19,29 @@ const document: any = window.document;
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
+  loginTitle:string = 'Login';
   public config: any = {};
   isNavbarCollapsed = true;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public elementRef: ElementRef,
     private configService: ConfigService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private profileService: ProfileService
   ) {}
-  notifications: any[] = [
-    {
-      userImg: 'assets/images/user/user1.jpg',
-      userName: 'Sarah Smith',
-      time: '14 mins ago',
-      message: 'Please check your mail',
-    },
-    {
-      userImg: 'assets/images/user/user2.jpg',
-      userName: 'Airi Satou',
-      time: '22 mins ago',
-      message: 'Work Completed !!!',
-    },
-    {
-      userImg: 'assets/images/user/user3.jpg',
-      userName: 'John Doe',
-      time: '3 hours ago',
-      message: 'kindly help me for code.',
-    },
-    {
-      userImg: 'assets/images/user/user4.jpg',
-      userName: 'Ashton Cox',
-      time: '5 hours ago',
-      message: 'Lets break for lunch...',
-    },
-    {
-      userImg: 'assets/images/user/user5.jpg',
-      userName: 'Sarah Smith',
-      time: '14 mins ago',
-      message: 'Please check your mail',
-    },
-    {
-      userImg: 'assets/images/user/user6.jpg',
-      userName: 'Airi Satou',
-      time: '22 mins ago',
-      message: 'Work Completed !!!',
-    },
-    {
-      userImg: 'assets/images/user/user7.jpg',
-      userName: 'John Doe',
-      time: '3 hours ago',
-      message: 'kindly help me for code.',
-    },
-  ];
+
   ngOnInit() {
+    console.log('HeaderComponent.ngOnInit called');
     this.config = this.configService.configData;
   }
+
+  login() {
+    window.location.href = this.profileService.getSigninURL();
+  }
+
   ngAfterViewInit() {
     // set theme on startup
     if (localStorage.getItem('theme')) {
@@ -123,34 +90,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  callFullscreen() {
-    if (
-      !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.msFullscreenElement
-    ) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    }
-  }
+ 
   mobileMenuSidebarOpen(event: any, className: string) {
     const hasClass = event.target.classList.contains(className);
     if (hasClass) {
@@ -159,6 +99,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.renderer.addClass(this.document.body, className);
     }
   }
+
   callSidemenuCollapse() {
     const hasClass = this.document.body.classList.contains('side-closed');
     if (hasClass) {
@@ -169,6 +110,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       this.renderer.addClass(this.document.body, 'submenu-closed');
     }
   }
+
   logout() {
     this.authService.logout().subscribe((res) => {
       if (!res.success) {
@@ -176,4 +118,5 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
 }

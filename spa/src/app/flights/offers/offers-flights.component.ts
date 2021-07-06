@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Airport } from '../../core/interfaces/airport';
-import { WeatherRequest, WeatherResponse, WeatherData, WeatherMain } from '../../core/interfaces/weather';
 import { AirportService } from '../../core/service/airport.service';
 import { SessionService } from '../../core/service/session.service';
 import { FlightsService } from '../../core/service/flights.service';
-import { WeatherService } from '../../core/service/weather.service';
-import { FormControl } from '@angular/forms';
 import { Flight, FlightsRequest, FlightsResponse } from "../../core/interfaces/flights";
 import { Router } from "@angular/router";
 
@@ -14,8 +11,7 @@ import { Router } from "@angular/router";
   templateUrl: './offers-flights.component.html',
   styleUrls: ['./offers-flights.component.scss'],
 })
-export class OffersFlightsComponent implements OnInit {
-  displayedColumns: string[] = ['flight', 'departing', 'departs', 'arrives', 'price'];
+export class OffersFlightsComponent implements OnInit {  
 
   processing:boolean = false;
   hasError:boolean = false;
@@ -26,28 +22,27 @@ export class OffersFlightsComponent implements OnInit {
   airportDeparting:Airport;
   airportArriving:Airport;
 
-  lblDepartingDisplayName: string;
-  lblArrivingDisplayName: string;
-  lblDepartingLat: string;
-  lblDepartingLon: string;
-  lblArrivingLat: string;
-  lblArrivingLon: string;
-
   adults:number;
   children:number;
   distance:string;
   duration:string;
 
-  dataSource:any = [
-    { flight: 'no flight data'},
-  ];
+  flightDepartureData:Flight[];
+  flightReturnData:any;
+  isRoundTrip:boolean = false;
+  step = 0;
+  
+  selectedDepartureFlight:Flight = null;
+  selectedReturnFlight:Flight = null;
+  isBookDisabled:boolean = true;
+  isBooked:boolean = false;
+  confirmationNumber:string = null;
 
   /*****************************************************************************
    */
   constructor(private airportService: AirportService, 
     private flightsService: FlightsService,
     private sessionService: SessionService, 
-    private weatherService: WeatherService,
     private router:Router) {
     console.log("OffersFlightsComponent:constructor", "called");
 
@@ -65,6 +60,13 @@ export class OffersFlightsComponent implements OnInit {
     this.hasError = false;
     this.processing = true;
 
+    this.selectedDepartureFlight = this.sessionService.getSelectedFlightDeparture();
+    this.selectedReturnFlight = this.sessionService.getSelectedFlightReturn();
+
+    if(this.selectedDepartureFlight && this.selectedReturnFlight) {
+      this.isBookDisabled = false;
+    }
+
     this.searchFlights();
   }
 
@@ -72,6 +74,7 @@ export class OffersFlightsComponent implements OnInit {
    * Filter the airports list and send back to populate the selected Airports
    */
   searchFlights() {
+    console.log("OffersFlightsComponent:searchFlights", "called");
 
     // Validate we have a proper flight request object
     if(!this.flightRequest || (this.flightRequest.adults + this.flightRequest.children) === 0) {
@@ -80,23 +83,9 @@ export class OffersFlightsComponent implements OnInit {
       return;
     }
 
-    // Update our Depart and Arriving Airport Information
-    this.lblDepartingDisplayName = this.flightRequest.from.displayName;
-    this.lblArrivingDisplayName = this.flightRequest.to.displayName;
-
-    this.lblDepartingLat = this.flightRequest.from.lat + "";
-    this.lblArrivingLat = this.flightRequest.to.lat + "";
-
-    this.lblDepartingLon = this.flightRequest.from.lon + "";
-    this.lblArrivingLon = this.flightRequest.to.lon + "";
-
     this.children = this.flightRequest.children;
     this.adults = this.flightRequest.adults;
-    this.distance = '';
-
-    // We have enought information to populate the Weather Information
-    //this.updateWeather(this.flightRequest.from.lat, this.flightRequest.from.lon, 'Departing');
-    //this.updateWeather(this.flightRequest.to.lat, this.flightRequest.to.lon, 'Arriving');
+    this.isRoundTrip = this.flightRequest.roundTrip === "true";
 
     // Call the Flights Service to get all Flight Information
     this.flightsService.getFlights(this.flightRequest).subscribe( 
@@ -117,41 +106,132 @@ export class OffersFlightsComponent implements OnInit {
 
         //We have a response, lets map it to our datasource
         //{ flight: 1014, departs: '10:52a', arrives: '10:52a', price: '$99.99'}
-        this.dataSource = [];
-        var i = 0;
-        const interateData:Flight[] = data['flights']['flightDeparture'];
+        this.flightDepartureData = data['flights']['flightDeparture'];
 
-        for(let flight of interateData) {
-          console.log("flight", flight);
-
-          if(i === 0) {
-            this.distance = flight.distance.toFixed(2) + ' miles';
-            this.duration = flight.duration.toFixed(2) + ' hrs';
-          }
-
-          var departs = new Date(flight.departs);
-          var arrives = new Date(flight.arrives);
-
-          this.dataSource.push(
-            {
-              "flight": flight.flight,
-              "departing": this.sessionService.formatDateMMDDYYY(departs),
-              "departs": this.sessionService.toTime(departs),
-              "arrives": this.sessionService.toTime(arrives),
-              "price": '$' + (flight.total).toFixed(2),
-            }
-          );
-
-        }
+        if(data['flights']['flightReturn'])
+          this.flightReturnData = data['flights']['flightReturn'];
 
         this.hasError = false;
         this.processing = false;
         console.log('OffersFlightsComponent:searchFlights completed');
       },
       (error:string) => {
-        console.log('OffersFlightsComponent:searchFlights error', error)
+        console.log('OffersFlightsComponent:searchFlights error', error);
     });
 
   }
+
+  /*****************************************************************************
+   * 
+   */
+  selectedFlightDeparture(event) {
+    console.log("OffersFlightsComponent:selectedFlightDeparture called", event);
+
+    //find the flight number in the flightDepartureData
+    for(var i = 0; i < this.flightDepartureData.length; i++) {
+      if(this.flightDepartureData[i].flight === event) {
+        this.selectedDepartureFlight = this.flightDepartureData[i];
+        this.sessionService.setSelectedFlightDeparture(this.selectedDepartureFlight);
+        this.nextStep();
+        break;
+      }
+    }
+
+    if(this.selectedDepartureFlight && this.selectedReturnFlight) {
+      this.isBookDisabled = false;
+    }
+
+    console.log('OffersFlightsComponent:selectedFlightDeparture selected', this.selectedDepartureFlight);
+  }
+
+  /*****************************************************************************
+   * 
+   */
+   selectedFlightReturn(event) {
+    console.log("OffersFlightsComponent:selectedFlightReturn called", event);
+
+    //find the flight number in the selectedFlightReturn
+    for(var i = 0; i < this.flightReturnData.length; i++) {
+      if(this.flightReturnData[i].flight === event) {
+        this.selectedReturnFlight = this.flightReturnData[i];
+        this.sessionService.setSelectedFlightReturn(this.selectedReturnFlight);
+        this.nextStep();
+        break;
+      }
+    }
+
+    if(this.selectedDepartureFlight && this.selectedReturnFlight) {
+      this.isBookDisabled = false;
+    }
+
+    console.log('OffersFlightsComponent:selectedFlightReturn selected', this.selectedReturnFlight);
+  }
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    if(this.step === 0 && !this.isRoundTrip) //skip 1
+      this.step = 2;
+    else
+      this.step++;
+  }
+
+  prevStep() {
+
+    if(this.step === 2 && !this.isRoundTrip) //skip 1
+      this.step = 0;
+    else
+      this.step--;
+
+  }
+
+  /*********************************************************
+   * 
+   */
+   book() {
+    this.hasError = false;
+
+    var dataToPost = this.selectedDepartureFlight;
+    dataToPost['adults'] = this.flightRequest.adults;
+    dataToPost['children'] = this.flightRequest.children;
+
+    this.flightsService.book(dataToPost).subscribe( (data) => {
+      console.log('OffersFlightsComponent.book', data);
+      this.confirmationNumber = data['confirmation'];
+      this.sessionService.setSelectedFlightDeparture(null);
+
+      if(this.isRoundTrip) {
+        dataToPost = this.selectedDepartureFlight;
+        dataToPost['adults'] = this.flightRequest.adults;
+        dataToPost['children'] = this.flightRequest.children;
+
+        this.flightsService.book(dataToPost).subscribe( (data) => {
+          console.log('OffersFlightsComponent.book roundtrip', data);
+          this.confirmationNumber = this.confirmationNumber + ' AND ' + data['confirmation'];
+          this.sessionService.setSelectedFlightReturn(null);
+          this.isBooked = true;
+
+        }, (err) => {
+          console.log('OffersFlightsComponent.book roundtrip', err);
+          this.hasError = true;
+          this.errorMessage = 'Booking Failed';
+        }, () => {
+          console.log('OffersFlightsComponent.book completed roundtrip');
+        });
+      } else {
+        this.isBooked = true;
+      }
+ 
+    }, (err) => {
+      console.log('OffersFlightsComponent.book', err);
+      this.hasError = true;
+      this.errorMessage = 'Booking Failed';
+    }, () => {
+      console.log('OffersFlightsComponent.book completed');
+    });
+
+ }
 
 }//end class

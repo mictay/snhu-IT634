@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AuthGuard } from './guard/auth.guard';
 import { AuthService } from './service/auth.service';
 import { AirportService } from './service/airport.service';
+import { ProfileService } from './service/profile.service';
+import { FlightsService } from './service/flights.service';
 import { DynamicScriptLoaderService } from './service/dynamic-script-loader.service';
 import { throwIfAlreadyLoaded } from './guard/module-import.guard';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,6 +18,8 @@ import { BrowserModule } from '@angular/platform-browser';
     AuthService,
     DynamicScriptLoaderService,
     AirportService,
+    ProfileService,
+    FlightsService
   ],
 })
 export class CoreModule {

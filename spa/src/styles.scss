@@ -17,6 +17,13 @@ div.mat-select-panel {
     }        
 
 }
+.flightSelectedDetails {
+    width: 100%;
+}
+
+.flightSelectedDetails td {
+    min-width: 140px;
+}
 
 .flightRequestDetails {
     width: 100%;
@@ -25,7 +32,7 @@ div.mat-select-panel {
 }
 
 .flightRequestDetails th {
-    width: 64px;
+    max-width: 100px;
 }
 
 .flightRequestDetails td {
@@ -33,10 +40,26 @@ div.mat-select-panel {
 }
 
 .cellseparator {
-    min-width: 15px;
+    min-width: 15px !important;
 }
 
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
 
+.profileDataTable {
+    margin-left: 15px;
+}
+.profileDataLabel {
+    min-width: 100px;
+    font-weight: bold;
+    text-align: right;
+    padding: 5px;
+}
+.profileDataValue {
+    text-align: left;
+    padding: 5px;
+}
 @media only screen and (max-width: 420px) {
 
     //Hide the Arrives # column if we small form factor
